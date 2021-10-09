@@ -1,2 +1,2 @@
-# presto
-A simple portfolio optimiser
+# tutti
+A simple portfolio optimiser beyond mean-variance optimisation
