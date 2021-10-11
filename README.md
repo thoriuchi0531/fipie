@@ -101,8 +101,12 @@ pip install -e https://github.com/thoriuchi0531/tutti.git
 ```
 
 # Requirements
+
 - python >= 3.6
 - pandas
 - scipy
 
 # Licence
+
+This project is licensed under the terms of the MIT license.
+
