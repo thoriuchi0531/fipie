@@ -68,7 +68,7 @@ class Tree:
     the applied clustering algorithm """
 
     def __init__(self):
-        self.nodes = []
+        self.nodes = []  # type: List[Node]
         self._node_map = dict()
         self._cluster_count = 0
 
@@ -162,6 +162,9 @@ class Tree:
         :param weighting: weighting instance to determine local weights
         :return: None
         """
+        # make sure all weights are initialised in case this function gets called multiple times in a row
+        self.init_weights()
+
         for i in self.nodes:
             if i.is_weight_set():
                 continue

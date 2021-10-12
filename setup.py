@@ -39,6 +39,9 @@ setup(name='tutti',
           'pandas',
           'scipy',
       ],
+      setup_requires=['pytest-runner'],
+      tests_require=['pytest'],
       zip_safe=False,
       include_package_data=True,
-      python_requires='>=3.6')
+      python_requires='>=3.6',
+      )

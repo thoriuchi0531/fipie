@@ -19,7 +19,6 @@ class ClusterAlgo(ReprMixin, metaclass=abc.ABCMeta):
         :param data: instrument returns which the clustering method is based on
         :return: array of cluster indices
         """
-        pass
 
 
 class NoCluster(ClusterAlgo):

@@ -13,7 +13,7 @@ class Weighting(ReprMixin, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def optimise(self, ret: pd.DataFrame, *args, **kwargs):
-        return
+        """ Calculate weights for instruments """
 
 
 class MeanVariance(Weighting):

@@ -12,6 +12,7 @@ class Portfolio:
     """ A portfolio of instrument returns """
 
     def __init__(self, ret: pd.DataFrame):
+        ret = self._preprocess_returns(ret)
         self.ret = ret
 
     def __repr__(self):
@@ -20,6 +21,15 @@ class Portfolio:
             return f'Portfolio({n_asset} asset)'
         else:
             return f'Portfolio({n_asset} assets)'
+
+    def _preprocess_returns(self, ret) -> pd.DataFrame:
+        if isinstance(ret, pd.DataFrame):
+            # No need to prerocess
+            return ret
+        elif isinstance(ret, pd.Series):
+            return ret.to_frame()
+        else:
+            raise ValueError(f'Unsupported data type for returns. Got {ret}')
 
     def create_tree(self,
                     cluster: ClusterAlgo,
