@@ -23,7 +23,7 @@ def infer_ts_frequency(data: Union[pd.Series, pd.DataFrame]) -> str:
         # monthly data
         return 'm'
     else:
-        raise ValueError(f'Frequency cannot be inferred. {data.index=}')
+        raise ValueError(f'Frequency cannot be inferred. Index is {data.index}')
 
 
 def infer_ann_factor(data: Union[pd.Series, pd.DataFrame]) -> float:
