@@ -7,23 +7,6 @@ from tutti.data import load_example_data
 from tutti.weighting import negative_sharpe_ratio
 
 
-def test_volatility_parity():
-    price = load_example_data()
-    ret = price.asfreq('w', method='pad').pct_change()
-
-    portfolio = Portfolio(ret)
-    weight = portfolio.weight_latest(
-        VolatilityParity(target_vol=0.1),
-        NoCluster(),
-    )
-
-    scaled = ret * weight
-    scaled_vol = scaled.std() * (52 ** 0.5)
-
-    # equal vol weighted
-    assert pytest.approx(scaled_vol - 0.1 / 7) == 0
-
-
 def test_mean_variance():
     price = load_example_data()
     ret = price.asfreq('w', method='pad').pct_change()
@@ -50,3 +33,52 @@ def test_mean_variance():
     portfolio_sharpe = portfolio_return.mean() / portfolio_return.std()  # daily sharpe
 
     assert optimal == pytest.approx(portfolio_sharpe)
+
+
+def test_mean_variance_fully_invested():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        MeanVariance(fully_invested=True),
+        NoCluster(),
+    )
+    assert pytest.approx(weight.sum()) == 1
+
+
+def test_mean_variance_long_only():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        MeanVariance(fully_invested=True, bounds=(0, None)),
+        NoCluster(),
+    )
+
+    assert pytest.approx(weight.min()) == 0
+    assert pytest.approx(weight.sum()) == 1
+
+
+def test_volatility_parity():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        VolatilityParity(target_vol=0.1, fully_invested=False),
+        NoCluster(),
+    )
+
+    scaled = ret * weight
+    scaled_vol = scaled.std() * (52 ** 0.5)
+
+    # equal vol weighted
+    assert pytest.approx(scaled_vol - 0.1 / 7) == 0
+
+    weight = portfolio.weight_latest(
+        VolatilityParity(target_vol=0.1, fully_invested=True),
+        NoCluster(),
+    )
+    assert pytest.approx(weight.sum()) == 1
