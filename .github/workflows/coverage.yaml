@@ -1,4 +1,4 @@
-name: tests
+name: coverage
 on:
   push:
     branches:
@@ -10,8 +10,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        python-version: [ '3.6', '3.7', '3.8', '3.9', '3.10' ]
+        os: [ ubuntu-latest ]
+        python-version: [ '3.9' ]
     steps:
       - uses: actions/checkout@v2
 
@@ -23,11 +23,11 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest coverage
 
-      - name: Display installed libraries
-        run: pip list
-
-      - name: Run pytest
+      - name: Generate report
         run:
-          pytest
+          coverage run -m pytest
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v1
