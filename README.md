@@ -2,6 +2,8 @@
 
 A simple portfolio optimiser beyond the mean-variance optimisation
 
+[![codecov](https://codecov.io/gh/thoriuchi0531/tutti/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/tutti)
+
 # Overview
 
 tutti is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
@@ -102,9 +104,11 @@ pip install -e https://github.com/thoriuchi0531/tutti.git
 
 # Requirements
 
+These are the tested versions but most likely it should work with older versions.
+
 - python >= 3.6
-- pandas
-- scipy
+- pandas >= 0.25
+- scipy >= 1.0
 
 # Licence
 
