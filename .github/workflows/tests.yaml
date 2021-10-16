@@ -23,6 +23,11 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install -r requirements.txt
+          pip install pytest
 
-      - name: Display Python version
+      - name: Display installed libraries
         run: pip list
+
+      - name: Run pytest
+        run:
+          pytest
