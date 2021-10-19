@@ -12,8 +12,14 @@ from tutti.date import infer_ann_factor
 class Weighting(ReprMixin, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
-    def optimise(self, ret: pd.DataFrame, *args, **kwargs):
-        """ Calculate weights for instruments """
+    def optimise(self, ret: pd.DataFrame, *args, **kwargs) -> pd.Series:
+        """ Calculate weights for instruments
+
+        :param ret: return time-series
+        :type ret: pd.DataFrame
+        :return: weights for each instrument
+        :rtype: pd.Series
+        """
 
 
 class MeanVariance(Weighting):
@@ -23,13 +29,17 @@ class MeanVariance(Weighting):
     def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
         """
 
-        :param fully_invested: If True, weights are rescaled so that they add up to 100%.
-        :param bounds: Lower and upper bounds of weights
+        :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
+            are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
+        :type fully_invested: bool, default True
+        :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
+            it only allows long positions.
+        :type bounds: tuple, list-like
         """
         self.fully_invested = fully_invested
         self.bounds = bounds
 
-    def optimise(self, ret: pd.DataFrame, *args, **kwargs):
+    def optimise(self, ret: pd.DataFrame, *args, **kwargs) -> pd.Series:
         initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
         mu = ret.mean()
         sigma = ret.cov()
@@ -69,7 +79,7 @@ class VolatilityParity(Weighting):
     equal to the target volatility. As a result instruments with lower volatility gets a relatively higher nominal
     weight. This method ignores the correlation between assets. """
 
-    def __init__(self, target_vol: float = 0.1, fully_invested: bool = True):
+    def __init__(self, target_vol: float = 0.1, fully_invested: bool = False):
         """
 
         :param target_vol: Annualised target volatility of each instrument

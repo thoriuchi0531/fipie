@@ -1,25 +1,15 @@
-# tutti
+# tutti 
 
-A simple portfolio optimiser beyond the mean-variance optimisation
-
-[![codecov](https://codecov.io/gh/thoriuchi0531/tutti/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/tutti)
-
-# Overview
-
-tutti is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
+**tutti** is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
 mean-variance optimisation to more modern methodologies!
 
-Highlights:
+## Installation
 
-- **Extendable**: tutti allows you to change the algorithm in a plug-and-play manner. Currently, it supports the
-  following methods
-    - Mean-variance optimisation
-    - Equal nominal weighting
-    - Volatility parity
-- **Clustering**: Clustering is supported for all weighting methods above. If applied, instruments can be grouped by
-  clusters before applying the weighting method
+```
+pip install git+https://github.com/thoriuchi0531/tutti.git
+```
 
-# Example
+## Example
 
 The simplest example is to compute equal nominal weights without clusters.
 
@@ -96,21 +86,12 @@ Node(root)
     Node(TLT)
 ```
 
-# Installation
+# More details
 
-```bash
-pip install git+https://github.com/thoriuchi0531/tutti.git
+```{toctree}
+:maxdepth: 2
+:caption: API reference
+:glob:
+
+api/*
 ```
-
-# Requirements
-
-These are the tested versions but most likely it should work with older versions.
-
-- python >= 3.6
-- pandas >= 0.25
-- scipy >= 1.0
-
-# Licence
-
-This project is licensed under the terms of the MIT license.
-

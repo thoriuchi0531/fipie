@@ -12,6 +12,15 @@ class Portfolio:
     """ A portfolio of instrument returns """
 
     def __init__(self, ret: pd.DataFrame):
+        """ Create a ``Portfolio`` instance
+
+        :param ret: time-series of instrument returns
+        :type ret: pd.DataFrame
+
+        .. note::
+            ``ret`` is frequency agnostic -- i.e., it can be daily, weekly or any other frequency as long as
+            ``tutti.date.infer_ts_frequency`` can infer its frequency.
+        """
         ret = self._preprocess_returns(ret)
         self.ret = ret
 
@@ -37,7 +46,11 @@ class Portfolio:
         """ Create a tree out of the return data frame
 
         :param cluster: clustering algorithm instance
-        :param ret: portfolio returns
+        :type cluster: ClusterAlgo
+        :param ret: portfolio returns to use to create a tree. If not provided, use the returns provided upon
+            instantiation. If provided, this parameter will be used to create a tree instead.
+        :type ret: pd.DataFrame, optional
+        :return: ``Tree`` instance which groups instruments into clusters
         """
         if ret is None:
             ret = self.ret
@@ -85,10 +98,23 @@ class Portfolio:
         """ Compute the latest portfolio weights using the full return time-series.
 
         :param weighting: weighting scheme instance
+        :type weighting: Weighting
         :param cluster: clustering algorithm instance
+        :type cluster: ClusterAlgo
         :param instrument_only: If True only weights for instruments are shown and ones for intermediate are omitted
-        :param final_weight: If True return the final weights for each instruments are returned.
+        :type instrument_only: bool, default True
+        :param final_weight: If True return the final weights for each instruments are returned. The portfolio return
+            :math:`r` can then be calculated as follows:
+
+            .. math::
+                r = \sum_i w_i \cdot r_i
+
+            where :math:`i` is the index for each instrument, :math:`w_i` is the final weight for instrument :math:`i`,
+            and :math:`r_i` is the return for instrument :math:`i`.
+
+        :type final_weight: bool, default True
         :return: weights for each node
+        :rtype: pd.Series
         """
         result = self._calculate_weight(self.ret, weighting, cluster,
                                         instrument_only=instrument_only,
@@ -106,12 +132,19 @@ class Portfolio:
         """ Compute the historical portfolio weights by applying the calculation on a rolling basis
 
         :param weighting: weighting scheme instance
+        :type weighting: Weighting
         :param cluster: clustering algorithm instance
+        :type cluster: ClusterAlgo
         :param instrument_only: If True only weights for instruments are shown and ones for intermediate are omitted
+        :type instrument_only: bool, default True
         :param final_weight: If True return the final weights for each instruments are returned.
-        :param freq: frequency to update the portfolio weights
+        :type final_weight: bool, default True
+        :param freq: frequency to update the portfolio weights.
+        :type freq: str, default 'm'
         :param lookback: the number of return samples (lookback horizon) to compute the portfolio weights
+        :type lookback: int, default 52 * 2 (2 years with weekly observations)
         :return: historical weights for each node
+        :rtype: pd.DataFrame
         """
         # rebalance dates
         dates = self.ret.asfreq(freq, method='pad').index

@@ -18,6 +18,7 @@ class ClusterAlgo(ReprMixin, metaclass=abc.ABCMeta):
 
         :param data: instrument returns which the clustering method is based on
         :return: array of cluster indices
+        :rtype: np.array
         """
 
 
@@ -26,6 +27,7 @@ class NoCluster(ClusterAlgo):
     which is the classical way of constructing a portfolio """
 
     def __init__(self):
+        """ Instantiate the clustering algorithm. No extra parameter is needed. """
         super().__init__(max_clusters=None)
 
     def create_clusters(self, data: pd.DataFrame) -> np.array:
@@ -33,11 +35,19 @@ class NoCluster(ClusterAlgo):
 
 
 class CorrMatrixDistance(ClusterAlgo):
-    """ Create clusters based on the distance in correlation matrix. The `max_node_size` parameter controls
+    """ Create clusters based on the distance in correlation matrix. The ``max_node_size`` parameter controls
     the maximum number of instruments in a cluster.
 
     cf. https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
     """
+
+    def __init__(self, max_clusters: int):
+        """ Instantiate the clustering algorithm
+
+        :param max_clusters: maximum number of clusters (or instruments) one cluster can have.
+        :type max_clusters: int
+        """
+        super().__init__(max_clusters=max_clusters)
 
     def create_clusters(self, data: pd.DataFrame) -> np.array:
         corr = data.corr().values
