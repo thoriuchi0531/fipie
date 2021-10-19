@@ -39,7 +39,7 @@ setup(name='tutti',
           'scipy>=1.0',
       ],
       extras_require={
-          'dev': ['pytest', 'coverage', 'sphinx', 'sphinx-book-theme'],
+          'dev': ['pytest', 'coverage', 'sphinx', 'sphinx-book-theme', 'myst_parser'],
       },
       zip_safe=False,
       include_package_data=True,
