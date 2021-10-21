@@ -19,6 +19,16 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
+def get_required():
+    file = read('requirements.txt')
+    return file.split('\n')
+
+
+def get_docs_extras():
+    file = read('docs', 'requirements.txt')
+    return file.split('\n')
+
+
 setup(name='tutti',
       version=find_version('tutti', '__init__.py'),
       description='A simple portfolio optimiser beyond the mean-variance optimisation',
@@ -34,18 +44,12 @@ setup(name='tutti',
       author_email='thoriuchi0531@gmail.com',
       license='MIT',
       packages=['tutti'],
-      install_requires=[
-          'pandas>=0.25',
-          'scipy>=1.0',
-      ],
+      install_requires=get_required(),
       extras_require={
           'dev': [
-              'pytest',
-              'coverage',
-              'sphinx==4.2.0',
-              'sphinx-book-theme==0.1.6',
-              'myst_parser==0.15.2',
-          ],
+                     'pytest',
+                     'coverage',
+                 ] + get_docs_extras(),
       },
       zip_safe=False,
       include_package_data=True,
