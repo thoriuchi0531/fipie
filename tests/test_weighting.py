@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.optimize import minimize
 
-from tutti import Portfolio, NoCluster, VolatilityParity, MeanVariance
+from tutti import Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance
 from tutti.data import load_example_data
 from tutti.weighting import negative_sharpe_ratio
 
@@ -57,6 +57,25 @@ def test_mean_variance_long_only():
         NoCluster(),
     )
 
+    assert pytest.approx(weight.min()) == 0
+    assert pytest.approx(weight.sum()) == 1
+
+
+def test_minimum_variance():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        MinimumVariance(),
+        NoCluster(),
+    )
+    assert pytest.approx(weight.sum()) == 1
+
+    weight = portfolio.weight_latest(
+        MinimumVariance(bounds=(0, None)),
+        NoCluster(),
+    )
     assert pytest.approx(weight.min()) == 0
     assert pytest.approx(weight.sum()) == 1
 

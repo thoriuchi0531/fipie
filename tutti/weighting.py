@@ -27,7 +27,7 @@ class MeanVariance(Weighting):
     Expected returns and risk are estimated by historical means and covariance matrix """
 
     def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
-        """
+        """ With default parameters, this produces *long-short fully-invested* portfolio.
 
         :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
             are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
@@ -49,6 +49,43 @@ class MeanVariance(Weighting):
             negative_sharpe_ratio,
             initial_weights,
             (mu, sigma),
+            method='SLSQP',
+            bounds=bounds,
+        )
+        weights = result['x']
+        weights = pd.Series(weights, index=ret.columns)
+
+        if self.fully_invested:
+            weights /= weights.sum()
+
+        return weights
+
+
+class MinimumVariance(Weighting):
+    """ Create a portfolio by minimising its variance.  """
+
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
+        """ With default parameters, this produces *long-short fully-invested* portfolio.
+
+        :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
+            are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
+        :type fully_invested: bool, default True
+        :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
+            it only allows long positions.
+        :type bounds: tuple, list-like
+        """
+        self.fully_invested = fully_invested
+        self.bounds = bounds
+
+    def optimise(self, ret: pd.DataFrame, *args, **kwargs) -> pd.Series:
+        initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
+        sigma = ret.cov()
+        bounds = [self.bounds] * len(ret.columns)
+
+        result = minimize(
+            portfolio_variance,
+            initial_weights,
+            (sigma,),
             method='SLSQP',
             bounds=bounds,
         )
@@ -102,6 +139,18 @@ class VolatilityParity(Weighting):
         return weights
 
 
+def portfolio_variance(weights: List[float], sigma: np.array) -> float:
+    """ Calculate portfolio variance from the given weights and covariance matrix
+
+    :param weights: instrument weights
+    :param sigma: covariance matrix of instruments
+    :return: portfolio variance
+    :rtype: float
+    """
+    weights = np.array(weights)
+    return weights.dot(sigma).dot(weights)
+
+
 def negative_sharpe_ratio(weights: List[float], mu: np.array, sigma: np.array) -> float:
     """ Calculate negative Sharpe ratio
 
@@ -109,10 +158,10 @@ def negative_sharpe_ratio(weights: List[float], mu: np.array, sigma: np.array) -
     :param mu: expected return of instruments
     :param sigma: covariance matrix of instruments
     :return: negative Sharpe ratio
+    :rtype: float
     """
-    weights = np.array(weights)
+    port_ret = mu.dot(np.array(weights))
+    port_vol = portfolio_variance(weights, sigma) ** 0.5
 
-    port_ret = mu.dot(weights)
-    port_vol = weights.dot(sigma).dot(weights) ** 0.5
     port_sharpe = port_ret / port_vol
     return -1 * port_sharpe
