@@ -96,6 +96,8 @@ Node(root)
     Node(TLT)
 ```
 
+More details can be found here: https://tutti.readthedocs.io/en/latest/
+
 # Installation
 
 ```bash
