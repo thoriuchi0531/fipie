@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.optimize import minimize
 
-from tutti import Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance
+from tutti import Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification
 from tutti.data import load_example_data
 from tutti.weighting import negative_sharpe_ratio
 
@@ -77,6 +77,18 @@ def test_minimum_variance():
         NoCluster(),
     )
     assert pytest.approx(weight.min()) == 0
+    assert pytest.approx(weight.sum()) == 1
+
+
+def test_max_diversification():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        MaximumDiversification(),
+        NoCluster(),
+    )
     assert pytest.approx(weight.sum()) == 1
 
 

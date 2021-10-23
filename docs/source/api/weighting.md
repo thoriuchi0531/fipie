@@ -11,6 +11,12 @@ The classes in ``Weighting`` defines the algorithms as to how weights are comput
 ```
 
 ```{eval-rst}
+.. autoclass:: tutti.MaximumDiversification 
+    :members:
+    :special-members: __init__
+```
+
+```{eval-rst}
 .. autoclass:: tutti.MeanVariance 
     :members:
     :special-members: __init__

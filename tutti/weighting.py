@@ -55,8 +55,7 @@ class MeanVariance(Weighting):
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
 
-        if self.fully_invested:
-            weights /= weights.sum()
+        weights = post_process(weights, self.fully_invested)
 
         return weights
 
@@ -92,8 +91,52 @@ class MinimumVariance(Weighting):
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
 
-        if self.fully_invested:
-            weights /= weights.sum()
+        weights = post_process(weights, self.fully_invested)
+
+        return weights
+
+
+class MaximumDiversification(Weighting):
+    r""" Create a portfolio which maximises the diversification factor
+
+    .. math::
+        \frac{ w^T \cdot \sigma }{ \sqrt{w^T \cdot \Sigma \cdot w} }
+
+    where :math:`w` is the weight vector of each instrument, :math:`\sigma` is the volatility vector of each instrument,
+    :math:`\Sigma` is the covariance matrix.
+    The numerator of the diversification factor is a weighted average of instrument volatility whereas
+    the denominator is the portfolio volatility after diversification.
+    """
+
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
+        """ With default parameters, this produces *long-short fully-invested* portfolio.
+
+        :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
+            are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
+        :type fully_invested: bool, default True
+        :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
+            it only allows long positions.
+        :type bounds: tuple, list-like
+        """
+        self.fully_invested = fully_invested
+        self.bounds = bounds
+
+    def optimise(self, ret: pd.DataFrame, *args, **kwargs) -> pd.Series:
+        initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
+        sigma = ret.cov()
+        bounds = [self.bounds] * len(ret.columns)
+
+        result = minimize(
+            negative_diversification_factor,
+            initial_weights,
+            (sigma,),
+            method='SLSQP',
+            bounds=bounds,
+        )
+        weights = result['x']
+        weights = pd.Series(weights, index=ret.columns)
+
+        weights = post_process(weights, self.fully_invested)
 
         return weights
 
@@ -133,8 +176,7 @@ class VolatilityParity(Weighting):
         instruments = ret.columns
         weights = pd.Series(scaling / len(instruments), index=instruments)
 
-        if self.fully_invested:
-            weights /= weights.sum()
+        weights = post_process(weights, self.fully_invested)
 
         return weights
 
@@ -165,3 +207,42 @@ def negative_sharpe_ratio(weights: List[float], mu: np.array, sigma: np.array) -
 
     port_sharpe = port_ret / port_vol
     return -1 * port_sharpe
+
+
+def diversification_factor(weights: List[float], sigma: np.array) -> float:
+    """ Calculate the negative diversification factor which is the ratio between the weighted average of instrument volatility
+    and resulting portfolio volatility
+
+    :param weights: instrument weights
+    :param sigma: covariance matrix of instruments
+    :return: diversification factor
+    :rtype: float
+    """
+    vol_vector = np.diag(sigma) ** 0.5
+    weighted_average = vol_vector.dot(weights)
+    port_vol = portfolio_variance(weights, sigma) ** 0.5
+
+    return weighted_average / port_vol
+
+
+def negative_diversification_factor(weights: List[float], sigma: np.array) -> float:
+    """ Compute the negative diversification factor for minimisation """
+    return -1 * diversification_factor(weights, sigma)
+
+
+def post_process(weights: pd.Series, fully_invested: bool) -> pd.Series:
+    """ Post-process of weighting
+
+    :param weights: raw weights
+    :type weights: pd.Series
+    :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
+        are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
+    :type fully_invested: bool, default True
+    :return: processed weights
+    :rtype: pd.Series
+    """
+
+    if fully_invested:
+        weights /= weights.sum()
+
+    return weights

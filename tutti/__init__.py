@@ -1,8 +1,7 @@
 from tutti.portfolio import Portfolio
-from tutti.weighting import EqualWeight, VolatilityParity, MeanVariance, MinimumVariance
+from tutti.weighting import EqualWeight, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification
 from tutti.cluster import NoCluster, CorrMatrixDistance
 
 __version__ = '0.0.1'
 
 # todo add risk parity
-# todo add max diversification

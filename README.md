@@ -16,6 +16,8 @@ Highlights:
     - Mean-variance optimisation
     - Equal nominal weighting
     - Volatility parity
+    - Maximum diversification
+    - Minimum variance
 - **Clustering**: Clustering is supported for all weighting methods above. If applied, instruments can be grouped by
   clusters before applying the weighting method
 

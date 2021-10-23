@@ -95,7 +95,7 @@ class Portfolio:
                       cluster: ClusterAlgo = NoCluster(),
                       instrument_only: bool = True,
                       final_weight: bool = True) -> pd.Series:
-        """ Compute the latest portfolio weights using the full return time-series.
+        r""" Compute the latest portfolio weights using the full return time-series.
 
         :param weighting: weighting scheme instance
         :type weighting: Weighting
