@@ -18,6 +18,7 @@ Highlights:
     - Volatility parity
     - Maximum diversification
     - Minimum variance
+    - Equal risk contribution (ERC, aka risk parity)
 - **Clustering**: Clustering is supported for all weighting methods above. If applied, instruments can be grouped by
   clusters before applying the weighting method
 

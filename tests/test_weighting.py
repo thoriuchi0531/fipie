@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 from scipy.optimize import minimize
 
-from tutti import Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification
+from tutti import (Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification,
+                   EqualRiskContribution)
 from tutti.data import load_example_data
 from tutti.weighting import negative_sharpe_ratio
 
@@ -25,6 +26,7 @@ def test_mean_variance():
         initial_weights,
         (mu, sigma),
         method='SLSQP',
+        bounds=[(0, None) for _ in range(len(ret.columns))],
     )
     optimal = result['fun'] * -1
 
@@ -87,6 +89,18 @@ def test_max_diversification():
     portfolio = Portfolio(ret)
     weight = portfolio.weight_latest(
         MaximumDiversification(),
+        NoCluster(),
+    )
+    assert pytest.approx(weight.sum()) == 1
+
+
+def test_erc():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        EqualRiskContribution(),
         NoCluster(),
     )
     assert pytest.approx(weight.sum()) == 1

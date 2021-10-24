@@ -26,8 +26,8 @@ class MeanVariance(Weighting):
     """ Weights are determined by the mean-variance approach and maximising the Sharpe ratio.
     Expected returns and risk are estimated by historical means and covariance matrix """
 
-    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
-        """ With default parameters, this produces *long-short fully-invested* portfolio.
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (0, None)):
+        """
 
         :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
             are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
@@ -35,6 +35,9 @@ class MeanVariance(Weighting):
         :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
             it only allows long positions.
         :type bounds: tuple, list-like
+
+        .. note::
+           With default parameters, this class produces a long-only fully-invested portfolio.
         """
         self.fully_invested = fully_invested
         self.bounds = bounds
@@ -63,8 +66,8 @@ class MeanVariance(Weighting):
 class MinimumVariance(Weighting):
     """ Create a portfolio by minimising its variance.  """
 
-    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
-        """ With default parameters, this produces *long-short fully-invested* portfolio.
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (0, None)):
+        """
 
         :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
             are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
@@ -72,6 +75,9 @@ class MinimumVariance(Weighting):
         :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
             it only allows long positions.
         :type bounds: tuple, list-like
+
+        .. note::
+           With default parameters, this class produces a long-only fully-invested portfolio.
         """
         self.fully_invested = fully_invested
         self.bounds = bounds
@@ -108,8 +114,8 @@ class MaximumDiversification(Weighting):
     the denominator is the portfolio volatility after diversification.
     """
 
-    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (None, None)):
-        """ With default parameters, this produces *long-short fully-invested* portfolio.
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (0, None)):
+        """
 
         :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
             are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
@@ -117,6 +123,9 @@ class MaximumDiversification(Weighting):
         :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
             it only allows long positions.
         :type bounds: tuple, list-like
+
+        .. note::
+           With default parameters, this class produces a long-only fully-invested portfolio.
         """
         self.fully_invested = fully_invested
         self.bounds = bounds
@@ -128,6 +137,64 @@ class MaximumDiversification(Weighting):
 
         result = minimize(
             negative_diversification_factor,
+            initial_weights,
+            (sigma,),
+            method='SLSQP',
+            bounds=bounds,
+        )
+        weights = result['x']
+        weights = pd.Series(weights, index=ret.columns)
+
+        weights = post_process(weights, self.fully_invested)
+
+        return weights
+
+
+class EqualRiskContribution(Weighting):
+    r""" Create a portfolio with equal risk contribution (ERC, aka risk parity) such that each instrument contributes
+    the same amount of risk to the portfolio.
+    More formally, let :math:`\sigma \left( w \right)` be the volatility of portfolio and :math:`w` be the weight
+    for each instrument. The volatility of portfolio can be decomposed to the following:
+
+    .. math::
+        \sigma \left( w \right) =
+        \sum_i \sigma_i \left( x \right) =
+        \sum_i w_i \frac{ {\partial} \sigma \left( x \right) }{ {\partial} w_i }
+
+    where :math:`\sigma_i \left( x \right)` is the total risk contribution of instrument :math:`i`,
+    :math:`\frac{ {\partial} \sigma \left( x \right) }{ {\partial} w_i }` is the marginal risk contribution.
+
+    The ERC portfolio is derived such that all instruments have the same amount of total risk contribution.
+
+
+    **Reference**
+    
+    -   Maillard, S., Roncalli, T. and Teïletche, J., 2010. The properties of equally weighted risk contribution portfolios. The Journal of Portfolio Management, 36(4), pp.60-70.
+    """
+
+    def __init__(self, fully_invested: bool = True, bounds: Tuple[float, None] = (0, None)):
+        """
+
+        :param fully_invested: If True, weights are rescaled so that they add up to 100%. By default the optimal weights
+            are rescaled to add up to 100% as the Sharpe ratio is scale-invariant with respect to the weight.
+        :type fully_invested: bool, default True
+        :param bounds: Lower and upper bounds of weights. If None, weights are unbounded, i.e., ``(0, None)`` means
+            it only allows long positions.
+        :type bounds: tuple, list-like
+
+        .. note::
+           With default parameters, this class produces a long-only fully-invested portfolio.
+        """
+        self.fully_invested = fully_invested
+        self.bounds = bounds
+
+    def optimise(self, ret: pd.DataFrame, *args, **kwargs) -> pd.Series:
+        initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
+        sigma = ret.cov()
+        bounds = [self.bounds] * len(ret.columns)
+
+        result = minimize(
+            total_risk_contribution_error,
             initial_weights,
             (sigma,),
             method='SLSQP',
@@ -228,6 +295,18 @@ def diversification_factor(weights: List[float], sigma: np.array) -> float:
 def negative_diversification_factor(weights: List[float], sigma: np.array) -> float:
     """ Compute the negative diversification factor for minimisation """
     return -1 * diversification_factor(weights, sigma)
+
+
+def total_risk_contribution_error(weights: List[float], sigma: np.array) -> float:
+    """ Compute the sum of squared error between all total risk contributions """
+    marginal = sigma.dot(weights)
+    total = marginal * weights
+
+    error = sum([(i - total[0]) ** 2 for i in total])
+
+    # multiply with some large number as `error` being the squared diff in total risk is usually a small number
+    c = 1e5
+    return error * c
 
 
 def post_process(weights: pd.Series, fully_invested: bool) -> pd.Series:
