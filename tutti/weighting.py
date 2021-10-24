@@ -168,7 +168,7 @@ class EqualRiskContribution(Weighting):
 
 
     **Reference**
-    
+
     -   Maillard, S., Roncalli, T. and Teïletche, J., 2010. The properties of equally weighted risk contribution portfolios. The Journal of Portfolio Management, 36(4), pp.60-70.
     """
 
