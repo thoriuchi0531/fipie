@@ -4,3 +4,5 @@ from tutti.weighting import (EqualWeight, VolatilityParity, MeanVariance, Minimu
 from tutti.cluster import NoCluster, CorrMatrixDistance
 
 __version__ = '0.0.1'
+
+# todo add example notebook
