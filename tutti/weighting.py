@@ -47,6 +47,7 @@ class MeanVariance(Weighting):
         mu = ret.mean()
         sigma = ret.cov()
         bounds = [self.bounds] * len(ret.columns)
+        const = create_const(self.fully_invested)
 
         result = minimize(
             negative_sharpe_ratio,
@@ -54,12 +55,10 @@ class MeanVariance(Weighting):
             (mu, sigma),
             method='SLSQP',
             bounds=bounds,
+            constraints=const,
         )
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
-
-        weights = post_process(weights, self.fully_invested)
-
         return weights
 
 
@@ -86,6 +85,7 @@ class MinimumVariance(Weighting):
         initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
         sigma = ret.cov()
         bounds = [self.bounds] * len(ret.columns)
+        const = create_const(self.fully_invested)
 
         result = minimize(
             portfolio_variance,
@@ -93,12 +93,11 @@ class MinimumVariance(Weighting):
             (sigma,),
             method='SLSQP',
             bounds=bounds,
+            constraints=const,
+            tol=1e-9,
         )
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
-
-        weights = post_process(weights, self.fully_invested)
-
         return weights
 
 
@@ -134,6 +133,7 @@ class MaximumDiversification(Weighting):
         initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
         sigma = ret.cov()
         bounds = [self.bounds] * len(ret.columns)
+        const = create_const(self.fully_invested)
 
         result = minimize(
             negative_diversification_factor,
@@ -141,12 +141,10 @@ class MaximumDiversification(Weighting):
             (sigma,),
             method='SLSQP',
             bounds=bounds,
+            constraints=const,
         )
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
-
-        weights = post_process(weights, self.fully_invested)
-
         return weights
 
 
@@ -192,6 +190,7 @@ class EqualRiskContribution(Weighting):
         initial_weights = np.ones(len(ret.columns)) / len(ret.columns)
         sigma = ret.cov()
         bounds = [self.bounds] * len(ret.columns)
+        const = create_const(self.fully_invested)
 
         result = minimize(
             total_risk_contribution_error,
@@ -199,12 +198,10 @@ class EqualRiskContribution(Weighting):
             (sigma,),
             method='SLSQP',
             bounds=bounds,
+            constraints=const,
         )
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
-
-        weights = post_process(weights, self.fully_invested)
-
         return weights
 
 
@@ -325,3 +322,15 @@ def post_process(weights: pd.Series, fully_invested: bool) -> pd.Series:
         weights /= weights.sum()
 
     return weights
+
+
+def create_const(fully_invested: bool = False) -> List:
+    const = []
+    if fully_invested:
+        fun = lambda x: x.sum() - 1
+        const.append({
+            'type': 'eq',
+            'fun': fun
+        })
+
+    return const
