@@ -3,6 +3,8 @@
 A simple portfolio optimiser beyond the mean-variance optimisation
 
 [![codecov](https://codecov.io/gh/thoriuchi0531/tutti/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/tutti)
+[![Documentation Status](https://readthedocs.org/projects/tutti/badge/?version=latest)](https://tutti.readthedocs.io/en/latest/?badge=latest)
+
 
 # Overview
 
