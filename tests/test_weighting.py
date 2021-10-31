@@ -109,7 +109,7 @@ def test_erc():
     total_contribution = ret.cov().dot(weight) * weight
     assert pytest.approx(ret.dot(weight).var()) == sum(total_contribution)
     for i in range(ret.shape[1]):
-        assert pytest.approx(total_contribution.iat[i]) == total_contribution.iat[0]
+        assert pytest.approx(total_contribution.iat[i], abs=1e-09) == total_contribution.iat[0]
 
 
 def test_volatility_parity():
