@@ -1,4 +1,5 @@
 from datetime import datetime
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -14,7 +15,7 @@ def create_hourly():
         datetime(2021, 1, 1, 2),
         datetime(2021, 1, 1, 3),
         datetime(2021, 1, 2, 0),
-    ])
+    ], dtype=np.float64)
     return ts
 
 
@@ -26,7 +27,7 @@ def create_daily():
         datetime(2021, 1, 3),
         datetime(2021, 1, 4),
         datetime(2021, 1, 7),
-    ])
+    ], dtype=np.float64)
     return ts
 
 
