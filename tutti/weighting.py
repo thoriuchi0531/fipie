@@ -199,6 +199,7 @@ class EqualRiskContribution(Weighting):
             method='SLSQP',
             bounds=bounds,
             constraints=const,
+            tol=1e-9,
         )
         weights = result['x']
         weights = pd.Series(weights, index=ret.columns)
@@ -299,7 +300,7 @@ def total_risk_contribution_error(weights: List[float], sigma: np.array) -> floa
     marginal = sigma.dot(weights)
     total = marginal * weights
 
-    error = sum([(i - total[0]) ** 2 for i in total])
+    error = sum([((i - total[0]) ** 2) ** 0.5 for i in total])
 
     # multiply with some large number as `error` being the squared diff in total risk is usually a small number
     c = 1e5

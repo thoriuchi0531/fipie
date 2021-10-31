@@ -103,6 +103,14 @@ def test_erc():
     assert pytest.approx(weight.sum()) == 1
     assert weight.min() > 0
 
+    # check if risk is decomposed as intended
+    # LHS = variance of portfolio return
+    # RHS = sum of total risk contribution of each instrument
+    total_contribution = ret.cov().dot(weight) * weight
+    assert pytest.approx(ret.dot(weight).var()) == sum(total_contribution)
+    for i in range(ret.shape[1]):
+        assert pytest.approx(total_contribution.iat[i]) == total_contribution.iat[0]
+
 
 def test_volatility_parity():
     price = load_example_data()
