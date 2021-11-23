@@ -221,6 +221,7 @@ def create_tree(data: pd.DataFrame, cluster_algo: ClusterAlgo = NoCluster()) -> 
     :param cluster_algo:
     :return: tree of nodes
     """
+    data = cluster_algo.pre_process(data)
     tree = _create_tree_inner(data, cluster_algo)
     tree.assign_node_returns(data)
     return tree

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -117,3 +118,30 @@ def test_weight_historical():
     )
 
     assert pytest.approx(weight2 - weight.iloc[-1]) == 0
+
+
+def test_weight_latest_redundant_instrument():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+    ret['SPY'] = 0
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_latest(
+        EqualWeight(),
+        CorrMatrixDistance(max_clusters=3),
+    )
+    assert np.isnan(weight['SPY'])
+
+
+def test_weight_historical_redundant_instrument():
+    price = load_example_data()
+    ret = price.asfreq('w', method='pad').pct_change()
+    ret.loc[:'2020', 'SPY'] = 0.0  # instrument not contributing until some time
+
+    portfolio = Portfolio(ret)
+    weight = portfolio.weight_historical(
+        EqualWeight(),
+        CorrMatrixDistance(max_clusters=3),
+    )
+    assert np.isnan(weight.at['2020-12-31', 'SPY'])
+    assert not np.isnan(weight.at['2021-1-31', 'SPY'])  # start having weights once SPY has some volatility

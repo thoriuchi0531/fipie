@@ -12,6 +12,10 @@ class ClusterAlgo(ReprMixin, metaclass=abc.ABCMeta):
     def __init__(self, max_clusters):
         self.max_clusters = max_clusters
 
+    def pre_process(self, data: pd.DataFrame) -> pd.DataFrame:
+        """ Pre-process the data time-series before feeding to the clustering algorithm.  """
+        return data
+
     @abc.abstractmethod
     def create_clusters(self, data: pd.DataFrame) -> np.array:
         """Return a list of cluster indices for each instrument
@@ -48,6 +52,19 @@ class CorrMatrixDistance(ClusterAlgo):
         :type max_clusters: int
         """
         super().__init__(max_clusters=max_clusters)
+
+    def pre_process(self, data: pd.DataFrame) -> pd.DataFrame:
+        """ Pre-process the data time-series before feeding to the clustering algorithm.
+        Remove instruments whose return standard deviation is zero in which case the correlation matrix can not be
+        computed.
+
+        :param data: instrument returns which the clustering method is based on
+        :type data: pd.DataFrame
+        :return: pre-processed data
+        :rtype: pd.DataFrame
+        """
+        std = data.std()
+        return data.loc[:, std > 0]
 
     def create_clusters(self, data: pd.DataFrame) -> np.array:
         corr = data.corr().values
