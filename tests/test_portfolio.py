@@ -143,5 +143,5 @@ def test_weight_historical_redundant_instrument():
         EqualWeight(),
         CorrMatrixDistance(max_clusters=3),
     )
-    assert np.isnan(weight.at['2020-12-31', 'SPY'])
-    assert not np.isnan(weight.at['2021-1-31', 'SPY'])  # start having weights once SPY has some volatility
+    assert np.isnan(weight.loc['2020-12-31', 'SPY'])
+    assert not np.isnan(weight.loc['2021-01-31', 'SPY'])  # start having weights once SPY has some volatility

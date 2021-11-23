@@ -81,7 +81,7 @@ class Portfolio:
         if instrument_only:
             # only select rows that are in the original return time-series
             instruments = ret.columns.tolist()
-            result = result.loc[instruments, :]
+            result = result.reindex(index=instruments)
 
         if final_weight:
             result = result['weight']
