@@ -29,9 +29,15 @@ def get_docs_extras():
     return file.split('\n')
 
 
+def get_long_description():
+    return read('README.md')
+
+
 setup(name='tutti',
       version=find_version('tutti', '__init__.py'),
       description='A simple portfolio optimiser beyond the mean-variance optimisation',
+      long_description=get_long_description(),
+      long_description_content_type='text/markdown',
       classifiers=[
           'Development Status :: 3 - Alpha',
           'License :: OSI Approved :: MIT License',
