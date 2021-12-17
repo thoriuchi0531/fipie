@@ -5,37 +5,37 @@ The classes in ``Weighting`` defines the algorithms as to how weights are comput
 ----
 
 ```{eval-rst}
-.. autoclass:: tutti.EqualWeight 
+.. autoclass:: fipie.EqualWeight 
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.EqualRiskContribution 
+.. autoclass:: fipie.EqualRiskContribution 
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.MaximumDiversification 
+.. autoclass:: fipie.MaximumDiversification 
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.MeanVariance 
+.. autoclass:: fipie.MeanVariance 
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.MinimumVariance 
+.. autoclass:: fipie.MinimumVariance 
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.VolatilityParity 
+.. autoclass:: fipie.VolatilityParity 
     :members:
     :special-members: __init__
 ```

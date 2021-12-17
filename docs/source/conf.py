@@ -16,7 +16,7 @@ sys.path.insert(0, Path(__file__).parent.parent.parent.as_posix())
 
 # -- Project information -----------------------------------------------------
 
-project = 'tutti'
+project = 'fipie'
 copyright = '2021'
 author = 'Tomoya Horiuchi'
 

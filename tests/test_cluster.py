@@ -1,5 +1,5 @@
-from tutti import NoCluster, CorrMatrixDistance
-from tutti.data import load_example_data
+from fipie import NoCluster, CorrMatrixDistance
+from fipie.data import load_example_data
 
 
 def test_no_cluster():

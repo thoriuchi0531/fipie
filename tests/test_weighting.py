@@ -2,10 +2,10 @@ import numpy as np
 import pytest
 from scipy.optimize import minimize
 
-from tutti import (Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification,
+from fipie import (Portfolio, NoCluster, VolatilityParity, MeanVariance, MinimumVariance, MaximumDiversification,
                    EqualRiskContribution)
-from tutti.data import load_example_data
-from tutti.weighting import negative_sharpe_ratio
+from fipie.data import load_example_data
+from fipie.weighting import negative_sharpe_ratio
 
 
 def test_mean_variance_objective():

@@ -1,4 +1,4 @@
-from tutti import VolatilityParity
+from fipie import VolatilityParity
 
 
 def test_repr():

@@ -4,8 +4,8 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 
-from tutti.cluster import ClusterAlgo, NoCluster
-from tutti.weighting import Weighting
+from fipie.cluster import ClusterAlgo, NoCluster
+from fipie.weighting import Weighting
 
 
 @unique

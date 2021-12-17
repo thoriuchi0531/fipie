@@ -1,12 +1,12 @@
-# tutti 
+# fipie 
 
-**tutti** is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
+**fipie** is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
 mean-variance optimisation to more modern methodologies!
 
 ## Installation
 
 ```
-pip install git+https://github.com/thoriuchi0531/tutti.git
+pip install git+https://github.com/thoriuchi0531/fipie.git
 ```
 
 ## Example
@@ -14,8 +14,8 @@ pip install git+https://github.com/thoriuchi0531/tutti.git
 The simplest example is to compute equal nominal weights without clusters.
 
 ```python
-from tutti import Portfolio, EqualWeight
-from tutti.data import load_example_data
+from fipie import Portfolio, EqualWeight
+from fipie.data import load_example_data
 
 # Create a portfolio instance
 price = load_example_data()
@@ -43,7 +43,7 @@ The portfolio above actually contains similar ETFs (e.g., SPY and IWM which are 
 In this scenario, it's more desirable to group similar instruments into clusters first and then compute weights.
 
 ```python
-from tutti import CorrMatrixDistance
+from fipie import CorrMatrixDistance
 
 # Compute the latest weight with the clustering algorithm
 cluster_algo = CorrMatrixDistance(max_clusters=3)

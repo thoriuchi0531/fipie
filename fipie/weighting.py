@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-from tutti.common import ReprMixin
-from tutti.date import infer_ann_factor
+from fipie.common import ReprMixin
+from fipie.date import infer_ann_factor
 
 
 class Weighting(ReprMixin, metaclass=abc.ABCMeta):

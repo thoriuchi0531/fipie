@@ -1,19 +1,19 @@
-# tutti
+# fipie 
 
 A simple portfolio optimiser beyond the mean-variance optimisation
 
-[![codecov](https://codecov.io/gh/thoriuchi0531/tutti/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/tutti)
-[![Documentation Status](https://readthedocs.org/projects/tutti/badge/?version=latest)](https://tutti.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/thoriuchi0531/fipie/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/fipie)
+[![Documentation Status](https://readthedocs.org/projects/fipie/badge/?version=latest)](https://fipie.readthedocs.io/en/latest/?badge=latest)
 
 
 # Overview
 
-tutti is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
+fipie is a simple portfolio optimiser which allows you to compute asset weights with algorithms from Markowitz's
 mean-variance optimisation to more modern methodologies!
 
 Highlights:
 
-- **Extendable**: tutti allows you to change the algorithm in a plug-and-play manner. Currently, it supports the
+- **Extendable**: fipie allows you to change the algorithm in a plug-and-play manner. Currently, it supports the
   following methods
     - Mean-variance optimisation
     - Equal nominal weighting
@@ -29,8 +29,8 @@ Highlights:
 The simplest example is to compute equal nominal weights without clusters.
 
 ```python
-from tutti import Portfolio, EqualWeight
-from tutti.data import load_example_data
+from fipie import Portfolio, EqualWeight
+from fipie.data import load_example_data
 
 # Create a portfolio instance
 price = load_example_data()
@@ -58,7 +58,7 @@ The portfolio above actually contains similar ETFs (e.g., SPY and IWM which are 
 In this scenario, it's more desirable to group similar instruments into clusters first and then compute weights.
 
 ```python
-from tutti import CorrMatrixDistance
+from fipie import CorrMatrixDistance
 
 # Compute the latest weight with the clustering algorithm
 cluster_algo = CorrMatrixDistance(max_clusters=3)
@@ -101,12 +101,12 @@ Node(root)
     Node(TLT)
 ```
 
-More details can be found here: https://tutti.readthedocs.io/en/latest/
+More details can be found here: https://fipie.readthedocs.io/en/latest/
 
 # Installation
 
 ```bash
-pip install git+https://github.com/thoriuchi0531/tutti.git
+pip install git+https://github.com/thoriuchi0531/fipie.git
 ```
 
 # Requirements

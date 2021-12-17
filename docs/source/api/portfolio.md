@@ -7,7 +7,7 @@ will depend on.
 ----
 
 ```{eval-rst}
-.. autoclass:: tutti.Portfolio
+.. autoclass:: fipie.Portfolio
     :members:
     :special-members: __init__
 ```

@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tutti.data import load_example_data
-from tutti.date import infer_ts_frequency, infer_ann_factor
+from fipie.data import load_example_data
+from fipie.date import infer_ts_frequency, infer_ann_factor
 
 
 def create_hourly():

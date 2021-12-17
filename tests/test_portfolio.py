@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tutti import Portfolio, NoCluster, CorrMatrixDistance, EqualWeight
-from tutti.data import load_example_data
-from tutti.tree import Tree
+from fipie import Portfolio, NoCluster, CorrMatrixDistance, EqualWeight
+from fipie.data import load_example_data
+from fipie.tree import Tree
 
 
 def test_portfolio_creation():

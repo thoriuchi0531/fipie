@@ -3,9 +3,9 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from tutti import tree
-from tutti.cluster import ClusterAlgo, NoCluster
-from tutti.weighting import Weighting
+from fipie import tree
+from fipie.cluster import ClusterAlgo, NoCluster
+from fipie.weighting import Weighting
 
 
 class Portfolio:
@@ -19,7 +19,7 @@ class Portfolio:
 
         .. note::
             ``ret`` is frequency agnostic -- i.e., it can be daily, weekly or any other frequency as long as
-            ``tutti.date.infer_ts_frequency`` can infer its frequency.
+            ``fipie.date.infer_ts_frequency`` can infer its frequency.
         """
         ret = self._preprocess_returns(ret)
         self.ret = ret

@@ -5,13 +5,13 @@ The classes in ``Cluster`` defines how each instrument should be grouped in a cl
 ----
 
 ```{eval-rst}
-.. autoclass:: tutti.NoCluster
+.. autoclass:: fipie.NoCluster
     :members:
     :special-members: __init__
 ```
 
 ```{eval-rst}
-.. autoclass:: tutti.CorrMatrixDistance
+.. autoclass:: fipie.CorrMatrixDistance
     :members:
     :special-members: __init__
 ```

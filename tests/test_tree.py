@@ -1,6 +1,6 @@
-from tutti import NoCluster, EqualWeight
-from tutti.data import load_example_data
-from tutti.tree import Tree, create_tree
+from fipie import NoCluster, EqualWeight
+from fipie.data import load_example_data
+from fipie.tree import Tree, create_tree
 
 
 def test_create_tree():

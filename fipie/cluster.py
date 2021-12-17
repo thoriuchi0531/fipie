@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import scipy.cluster.hierarchy as sch
 
-from tutti.common import ReprMixin
+from fipie.common import ReprMixin
 
 
 class ClusterAlgo(ReprMixin, metaclass=abc.ABCMeta):

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from tutti.data import load_example_data
+from fipie.data import load_example_data
 
 
 def test_load_example_data():

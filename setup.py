@@ -33,8 +33,8 @@ def get_long_description():
     return read('README.md')
 
 
-setup(name='tutti',
-      version=find_version('tutti', '__init__.py'),
+setup(name='fipie',
+      version=find_version('fipie', '__init__.py'),
       description='A simple portfolio optimiser beyond the mean-variance optimisation',
       long_description=get_long_description(),
       long_description_content_type='text/markdown',
@@ -45,11 +45,11 @@ setup(name='tutti',
           'Topic :: Office/Business :: Financial :: Investment',
       ],
       keywords='finance investment optimisation',
-      url='https://github.com/thoriuchi0531/tutti',
+      url='https://github.com/thoriuchi0531/fipie',
       author='thoriuchi0531',
       author_email='thoriuchi0531@gmail.com',
       license='MIT',
-      packages=['tutti'],
+      packages=['fipie'],
       install_requires=get_required(),
       extras_require={
           'dev': [
