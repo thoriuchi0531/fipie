@@ -1,9 +1,6 @@
-from os.path import abspath
-from pathlib import Path
-
 import pandas as pd
 
-data_csv = Path(abspath(__file__)).parent.parent.joinpath('data', 'price.csv')
+csv_url = 'https://raw.githubusercontent.com/thoriuchi0531/fipie/main/data/price.csv'
 
 
 def load_example_data() -> pd.DataFrame:
@@ -11,4 +8,4 @@ def load_example_data() -> pd.DataFrame:
 
     :return: dataframe containing instrument prices
     """
-    return pd.read_csv(data_csv, index_col=0, parse_dates=True)
+    return pd.read_csv(csv_url, index_col=0, parse_dates=True)

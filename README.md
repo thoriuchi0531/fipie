@@ -106,7 +106,7 @@ More details can be found here: https://fipie.readthedocs.io/en/latest/
 # Installation
 
 ```bash
-pip install git+https://github.com/thoriuchi0531/fipie.git
+pip install fipie
 ```
 
 # Requirements
