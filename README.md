@@ -2,6 +2,7 @@
 
 A simple portfolio optimiser beyond the mean-variance optimisation
 
+[![PyPI version](https://badge.fury.io/py/fipie.svg)](https://badge.fury.io/py/fipie)
 [![codecov](https://codecov.io/gh/thoriuchi0531/fipie/branch/main/graph/badge.svg?token=U6UFHUM29L)](https://codecov.io/gh/thoriuchi0531/fipie)
 [![Documentation Status](https://readthedocs.org/projects/fipie/badge/?version=latest)](https://fipie.readthedocs.io/en/latest/?badge=latest)
 
