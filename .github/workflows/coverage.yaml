@@ -2,11 +2,11 @@ name: coverage
 on:
   push:
     branches:
-      - master
       - main
 
 jobs:
-  build:
+  coverage:
+    name: Run code coverage
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

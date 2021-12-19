@@ -2,11 +2,11 @@ name: tests
 on:
   push:
     branches:
-      - master
       - main
 
 jobs:
-  build:
+  unittest:
+    name: Run pytest across python versions and platforms
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
