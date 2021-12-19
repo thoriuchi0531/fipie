@@ -6,7 +6,7 @@ mean-variance optimisation to more modern methodologies!
 ## Installation
 
 ```
-pip install git+https://github.com/thoriuchi0531/fipie.git
+pip install fipie
 ```
 
 ## Example
