@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-data_csv = Path(abspath(__file__)).parent.parent.joinpath('data', 'price.csv')
+data_csv = Path(abspath(__file__)).parent.joinpath('data', 'price.csv')
 
 
 def load_example_data() -> pd.DataFrame:
