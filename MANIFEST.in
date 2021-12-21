@@ -1,1 +1,1 @@
-include data/price.csv
+include fipie/data/price.csv
